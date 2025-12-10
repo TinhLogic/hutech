@@ -18,38 +18,42 @@ BASE_DIR = "vnexpress_data"
 os.makedirs(BASE_DIR, exist_ok=True)
 
 CATEGORIES = {
-    "the-gioi": {"url": "https://vnexpress.net/the-gioi", "limit": 500},
-    "thoi-su": {"url": "https://vnexpress.net/thoi-su", "limit": 500},
-    "kinh-doanh": {"url": "https://vnexpress.net/kinh-doanh", "limit": 500},
+    # "the-gioi": {"url": "https://vnexpress.net/the-gioi", "limit": 500},
+    # "thoi-su": {"url": "https://vnexpress.net/thoi-su", "limit": 500},
+    # "kinh-doanh": {"url": "https://vnexpress.net/kinh-doanh", "limit": 500},
     "the-thao": {"url": "https://vnexpress.net/the-thao", "limit": 500},
-    "giai-tri": {"url": "https://vnexpress.net/giai-tri", "limit": 300},
-    "phap-luat": {"url": "https://vnexpress.net/phap-luat", "limit": 500},
-    "suc-khoe": {"url": "https://vnexpress.net/suc-khoe", "limit": 300},
-    "giao-duc": {"url": "https://vnexpress.net/giao-duc", "limit": 300},
-    "du-lich": {"url": "https://vnexpress.net/du-lich", "limit": 300},
-    "khoa-hoc-cong-nghe": {
-        "url": "https://vnexpress.net/khoa-hoc-cong-nghe",
-        "limit": 300,
-    },
-    "doi-song": {"url": "https://vnexpress.net/doi-song", "limit": 300},
-    "xe": {"url": "https://vnexpress.net/oto-xe-may", "limit": 300},
+    # "giai-tri": {"url": "https://vnexpress.net/giai-tri", "limit": 300},
+    # "phap-luat": {"url": "https://vnexpress.net/phap-luat", "limit": 500},
+    # "suc-khoe": {"url": "https://vnexpress.net/suc-khoe", "limit": 300},
+    # "giao-duc": {"url": "https://vnexpress.net/giao-duc", "limit": 300},
+    # "du-lich": {"url": "https://vnexpress.net/du-lich", "limit": 300},
+    # "khoa-hoc-cong-nghe": {
+    #     "url": "https://vnexpress.net/khoa-hoc-cong-nghe",
+    #     "limit": 300,
+    # },
+    # "doi-song": {"url": "https://vnexpress.net/doi-song", "limit": 300},
+    # "xe": {"url": "https://vnexpress.net/oto-xe-may", "limit": 300},
 }
 
 def format_string(txt):
-    if len(txt) <= 0:
+    if not txt:
         return ""
 
-    # Chuẩn hóa dấu gạch ngang thành " - "
-    txt = re.sub(r"\s*[-–—]\s*", " - ", txt)
+    # 1. Chuẩn hóa unicode tiếng Việt (tránh mất dấu)
+    import unicodedata
+    txt = unicodedata.normalize("NFC", txt)
 
-    # Nếu crawl bị dính chữ như "MỹPhi" → tách chữ HOA
-    txt = re.sub(r"[^a-zA-Z0-9À-ỹ\s]", " ", txt)
+    # 2. Thay các dấu -, –, — thành 1 space (không dính từ)
+    txt = re.sub(r"\s*[-–—]\s*", " ", txt)
 
-    # Gom nhiều khoảng trắng lại còn 1
+    # 3. Giữ lại chữ cái tiếng Việt, số và khoảng trắng
+    #   Lưu ý: \w không dùng được vì giữ _
+    txt = re.sub(r"[^0-9a-zA-ZÀ-ỹ\s]", " ", txt)
+
+    # 4. Gom nhiều space thành 1
     txt = re.sub(r"\s+", " ", txt).strip()
 
     return txt
-
 
 # ================== LẤY LINK (CHUẨN 2025) ==================
 def get_article_links(category_url, max_pages=20):
@@ -110,7 +114,7 @@ def crawl_article(url):
 
         # ================== DESCRIPTION ==================
         desc = soup.find("p", class_="description")
-        desc = desc.get_text(strip=True) if desc else ""
+        desc = desc.get_text(" ", strip=True) if desc else ""
         desc = format_string(desc)
 
         # ================== CONTENT ==================
@@ -121,7 +125,7 @@ def crawl_article(url):
 
         if article_block:
             for p in article_block.find_all("p"):
-                txt = p.get_text(strip=True)
+                txt = p.get_text(" ", strip=True)
                 if txt:
                     content_parts.append(txt)
 
