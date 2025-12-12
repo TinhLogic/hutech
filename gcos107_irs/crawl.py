@@ -21,7 +21,7 @@ CATEGORIES = {
     # "the-gioi": {"url": "https://vnexpress.net/the-gioi", "limit": 300},
     # "thoi-su": {"url": "https://vnexpress.net/thoi-su", "limit": 300},
     "kinh-doanh": {"url": "https://vnexpress.net/kinh-doanh", "limit": 300},
-    "the-thao": {"url": "https://vnexpress.net/the-thao", "limit": 500},
+    "the-thao": {"url": "https://vnexpress.net/the-thao", "limit": 300},
     "giai-tri": {"url": "https://vnexpress.net/giai-tri", "limit": 300},
     "phap-luat": {"url": "https://vnexpress.net/phap-luat", "limit": 300},
     "suc-khoe": {"url": "https://vnexpress.net/suc-khoe", "limit": 300},
