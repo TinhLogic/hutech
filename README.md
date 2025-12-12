@@ -1,4 +1,4 @@
-  # GCOS107 — Khai thác thông tin (gcos107_khai_thac_thong_tin)
+  # GCOS107 — Khai thác thông tin
 
   Mục tiêu: Thu thập và xử lý tin tức từ VnExpress để xây dựng chỉ mục tra cứu/trích xuất thông tin và phục vụ giao diện ứng dụng để truy vấn/kết quả.
 
