@@ -2,6 +2,7 @@
 import streamlit as st
 import pickle
 import re
+import time
 from sklearn.metrics.pairwise import cosine_similarity
 from underthesea import word_tokenize
 
@@ -72,10 +73,12 @@ query = st.text_input("Nhập từ khóa tìm kiếm (ví dụ: bầu cử Mỹ,
                       placeholder="Gõ ở đây rồi nhấn Enter")
 
 if query:
+    starttime = time.time()
     with st.spinner("Đang tìm kiếm..."):
         results = search(query, top_k=15)
+    endtime = time.time() - starttime
     
-    st.markdown(f"**Tìm thấy {len(results)} kết quả cho:** `{query}`")
+    st.markdown(f"**Tìm thấy {len(results)} kết quả cho:** `{query}` trong`{endtime:2f}`ms")
     
     for i, r in enumerate(results, 1):
         with st.expander(f"{i}. {r['title']} ({r['score']})"):
@@ -85,7 +88,7 @@ else:
     st.info("Nhập từ khóa ở ô trên để bắt đầu tìm kiếm")
     st.markdown("""
     ### Ví dụ gợi ý bạn thử:
-    - `phạm nhật vượng`
+    - `việt nam`
     - `bão yagi`
     - `u23 việt nam`
     - `ô tô điện vinfast`
